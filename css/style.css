@@ -1,6 +1,4 @@
-body {
-    background-color: #000000;
-}
+
 
 .titulo-login {
     color: #7028e5;
@@ -27,11 +25,13 @@ body {
     color:red;
 }
 
-.modal-content {
-    background-color: black;
-}
+
 
 .modal-title {
     color: #7028e5;
 }
 
+#tarjetas-usuario {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+}

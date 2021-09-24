@@ -18,7 +18,7 @@
     <link href="./css/style.css" rel="stylesheet">
 </head>
 
-<body>
+<body onload = "recuperarDatos()">
     <h1 class="titulo-login display-1">CT Issue Tracker</h1>
     <div class="formulario-login">
         <form id="form">
@@ -35,7 +35,7 @@
                 <input type="checkbox" class="form-check-input" id="exampleCheck1">
                 <label class="form-check-label" for="exampleCheck1">Check me out</label>
             </div>
-            <button type="button" onclick="obtener_usuario()" class="btn btn-primary">Submit</button>
+            <button type="button" onclick="logear_usuario()" class="btn btn-primary">Submit</button>
 
             <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
                 data-bs-target="#modalRegistro">Registrarse
@@ -106,9 +106,15 @@
         </div>
     </div>
     <!--Custom Scrips-->
-    <script src="js/User.js"></script>
+    <script src="js/model/User.js"></script>
+    <script src = "js/model/Ticket.js"></script>
+    <script src = "js/model/Estado.js"></script>
+    <script src = "js/model/Comentario.js"></script>
+    <script src = "js/model/Data.js"></script>
+
     <script src="js/RegistroUser.js"></script>
     <script src = "js/LoginUser.js"></script>
+    <script src = "js/controller/UsuarioController.js"></script>
 </body>
 
 </html>

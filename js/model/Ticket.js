@@ -1,0 +1,24 @@
+const Ticket = (
+    id_ticket, 
+    titulo, 
+    descripcion, 
+    responsable, 
+    fecha_creacion, 
+    fecha_vencimiento, 
+    prioridad, 
+    creador, 
+    resultado, 
+    estado
+    ) => {
+        this.id_ticket = id_ticket;
+        this.titulo = titulo;
+        this.descripcion = descripcion;
+        this.responsable = responsable;
+        this.fecha_creacion = fecha_creacion;
+        this.fecha_vencimiento = fecha_vencimiento;
+        this.prioridad = prioridad;
+        this.creador = creador;
+        this.resultado = resultado;
+        this.estado = estado;
+
+}
