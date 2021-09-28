@@ -31,7 +31,19 @@
     color: #7028e5;
 }
 
-#tarjetas-usuario {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
+#tablaContenedor {
+    margin-left: 25%;
+    margin-right: 25%;
+    margin-top: 50px;
+}
+
+#oculto {
+    display: none;
+    opacity: 0;
+}
+
+#form-visible-registro{
+    margin-left: 25%;
+    margin-right: 25%;
+    margin-top: 60px;
 }

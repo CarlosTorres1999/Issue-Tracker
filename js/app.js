@@ -2,7 +2,7 @@
 let admin = new User(0, "admin", "admin", "admin", "admin", false, "admin");
 
 let g_data = new Data([], [], [], [], null, admin);
-
+let g_idSelecionado = -1;
 
 let g_idUsuario = 1;
 let usuarioNombre;
@@ -79,29 +79,29 @@ const initLogin = () => {
 
 const logear_usuario = () => {
     let user_temp;
-    for(let user of g_data.usuarios){
-        if(user.userName === userName.value && user.password === pass.value){
+    for (let user of g_data.usuarios) {
+        if (user.userName === userName.value && user.password === pass.value) {
             user_temp = user;
         }
         else {
             user_temp = null;
         }
     }
-            
-    if (user_temp){
+
+    if (user_temp) {
         user_temp.estaLogueado = true;
         g_data.usuarioLogueado = user_temp;
         alert("Logueado como usuario");
         localStorage.setItem("data", JSON.stringify(g_data));
-            
-        
-    } else if(userName.value === admin.userName && pass.value === admin.password){
-       admin.estaLogeado = true;
-       g_data.usuarioLogueado = admin;
-       alert("logueado como administrador");
-       localStorage.setItem("data", JSON.stringify(g_data));
-       fnRedirigirAlUserDashboard();
-    }else{
+
+
+    } else if (userName.value === admin.userName && pass.value === admin.password) {
+        admin.estaLogeado = true;
+        g_data.usuarioLogueado = admin;
+        alert("logueado como administrador");
+        localStorage.setItem("data", JSON.stringify(g_data));
+        fnRedirigirAlUserDashboard();
+    } else {
 
     }
 }
@@ -110,8 +110,7 @@ const fnRedirigirAlUserDashboard = () => {
 }
 
 
-const obtener_usuario_logueado = () =>
-{
+const obtener_usuario_logueado = () => {
     return g_data.usuarioLogueado;
 }
 
@@ -130,55 +129,87 @@ const fnBorrarUsuario = (id) => {
     if (pos === -1) {
         alert("Usuario no encontrado");
     } else {
-        g_data.usuarios.splice(pos, 1);
-        localStorage.setItem("data", JSON.stringify(g_data));
-        fnListarUsuarios();
+        let band = window.confirm("Seguro que quiere borrar al usuario?");
+        if (band) {
+            g_data.usuarios.splice(pos, 1);
+            localStorage.setItem("data", JSON.stringify(g_data));
+            fnListarUsuarios();
+        }
+
     }
 }
 
 
 const actualizarUsuario = (id) => {
-    let predicate = user => user.id === id;
-    if (!g_data.usuarios.find(predicate)) {
+    
 
-    } else {
+    let user_temp = g_data.usuarios.find(user => user.id === id);
+    
+    document.getElementById("oculto").id = "form-visible-registro";
 
-    }
+    document.getElementById("updateNombre").value = user_temp.nombre
+    document.getElementById("updateApellido").value = user_temp.apellido;
+    document.getElementById("updateUserName").value = user_temp.userName;
+    document.getElementById("updatePassword").value = user_temp.password
+    document.getElementById("updateRole").value = user_temp.role;
+    g_idSelecionado = id;
+}
+
+const fnActualizar = () => {
+    let predicate = user => user.id === g_idSelecionado;
+    g_data.usuarios.find(predicate).nombre = document.getElementById("updateNombre").value;
+    g_data.usuarios.find(predicate).apellido = document.getElementById("updateApellido").value;
+    g_data.usuarios.find(predicate).userName = document.getElementById("updateUserName").value;
+    g_data.usuarios.find(predicate).password = document.getElementById("updatePassword").value;
+    g_data.usuarios.find(predicate).role = document.getElementById("updateRole").value;
+
+    localStorage.setItem("data", JSON.stringify(g_data));
+    fnListarUsuarios();
 }
 
 const fnListarUsuarios = () => {
+
     let buff = [];
-    if(g_data.usuarios.length === 0){
+    if (g_data.usuarios.length === 0) {
         buff.push("<h1>No hay usuarios disponibles<h1>");
+        document.getElementById('tabla-usuarios').innerHTML = buff.join("\n");
+        return false;
     }
-    for(let user of g_data.usuarios){
-        if(!(user.id === obtener_usuario_logueado().id) ){
-            buff.push('<div class="card" style="width: 18rem;">');
-            buff.push('<div class ="card-body">')    
-            buff.push('<h5 class ="card-title">Usuario</h5>');    
-            buff.push('<p class ="card-text">Datos del usuario</p>');   
-            buff.push('</div>');   
-            buff.push('<ul class ="list-group list-group-flush">');    
-            buff.push('<li class ="list-group-item"> Nombre:'+user.nombre+'</li>');    
-            buff.push('<li class ="list-group-item"> Apellido: '+user.apellido+'</li>');    
-            buff.push('<li class ="list-group-item"> UserName: '+user.userName+'</li>');
-            buff.push('<li class ="list-group-item"> Password: '+user.password+'</li>');
-            buff.push('<li class ="list-group-item"> Rol de Usuario'+user.role+'</li>');      
-            buff.push('</ul>');    
-            buff.push('<div class ="card-body">');    
-            buff.push('<button class = "btn " onclick = "fnBorrarUsuario('+user.id+')">Borrar</button>') ;  
-            buff.push('<button class = "btn">Actualizar</button>');    
-            buff.push('</div>');    
-            buff.push('</div>');
-        }
 
+    buff.push(`<table class="table">`);
+    buff.push(`<thead>`);
+    buff.push(`<tr>`);
+    buff.push(`<th scope="col">Nombres</th>`);
+    buff.push(`<th scope="col">Apellido</th>`);
+    buff.push(`<th scope="col">UserName</th>`);
+    buff.push(`<th scope="col">Password</th>`);
+    buff.push(`<th scope="col">Role</th>`);
+    buff.push(`<th scope="col">Accion</th>`);
+    buff.push(`</tr>`);
+    buff.push(`</thead>`);
+
+    for (let user of g_data.usuarios) {
+        buff.push(`<tbody>`);
+        buff.push(`<tr>`);
+        buff.push(`<td>${user.nombre}</th>`);
+        buff.push(`<td>${user.apellido}</td>`);
+        buff.push(`<td>${user.userName}</td>`);
+        buff.push(`<td>${user.password}</td>`);
+        buff.push(`<td>${user.role}</td>`);
+        buff.push(`<td>`);
+        buff.push(`<nav>`);
+        buff.push(`<button class = "btn btn-danger" onclick ="fnBorrarUsuario(${user.idUser})"> Borrar </button>`);
+        buff.push(`<button class = "btn btn-primary" onclick = "actualizarUsuario(${user.idUser})"> Actualizar </button>`);
+        buff.push(`</nav>`);
+        buff.push(`</tbody>`);
     }
-    document.getElementById('tarjeta-usuario').innerHTML = buff.join("/n");
-
-
+    buff.push(`</table>`);
+    document.getElementById('tabla-usuarios').innerHTML = buff.join("\n");
+    return true;
 }
 
 const init = () => {
     get_dato();
     fnListarUsuarios();
+    return false;
 }
