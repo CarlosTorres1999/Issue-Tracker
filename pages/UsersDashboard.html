@@ -23,13 +23,13 @@
 </head>
 
 <body onload="init()">
-    <ul class="nav">
+    <ul class="nav justify-content-center">
         <li class="nav-item">
-            <h1 class="display-2">Bienvenido a la pag de Administracion</h1>
+            <a class = "nav-link active" href="UsersDashboard.html">Bienvenido a la pag de Administracion</a>
         </li>
 
         <li class="nav-item">
-            <button class="btn btn-primary"> Log Out</button>
+            <a class = "nav-link" href="javascript:fnLogOutUsersDashBoard()">Log Out</a>
         </li>
     </ul>
 
@@ -48,7 +48,7 @@
                     <label for="updateApellido" class="form-label">Apellido</label>
                 </div>
                 <div class="col-8">
-                    <input type="text" class="form-control" id="UpdateApellido">
+                    <input type="text" class="form-control" id="updateApellido">
                 </div>
             </div>
             <div class="mb-3 row">
@@ -80,8 +80,10 @@
 
             <div>
                 <button type="button" class="btn btn-primary" id="btn-registrarse" onclick="fnActualizar()">
+                    Editar Usuario
+                </button>
 
-                    Editar Usuario</button>
+                <button type = "button" class= "btn btn-outline-primary" onclick="fnCancelarEdicion()"> Cancelar</button>
             </div>
         </form>
     </div>

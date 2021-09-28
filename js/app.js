@@ -14,6 +14,13 @@ let formulario;
 let userName;
 let pass;
 
+let updateNombre;
+let updateApellido;
+let updateUserName;
+let updatePassword;
+let updateRole;
+
+
 
 const fnGuardarUsuario = () => {
     if (verificarUserName(usuarioUserName.value)) {
@@ -78,15 +85,7 @@ const initLogin = () => {
 }
 
 const logear_usuario = () => {
-    let user_temp;
-    for (let user of g_data.usuarios) {
-        if (user.userName === userName.value && user.password === pass.value) {
-            user_temp = user;
-        }
-        else {
-            user_temp = null;
-        }
-    }
+    let user_temp = g_data.usuarios.find(user => user.userName === userName.value && user.password === pass.value);
 
     if (user_temp) {
         user_temp.estaLogueado = true;
@@ -98,11 +97,12 @@ const logear_usuario = () => {
     } else if (userName.value === admin.userName && pass.value === admin.password) {
         admin.estaLogeado = true;
         g_data.usuarioLogueado = admin;
+        g_data.administrador = admin;
         alert("logueado como administrador");
         localStorage.setItem("data", JSON.stringify(g_data));
         fnRedirigirAlUserDashboard();
     } else {
-
+        alert("Error en las credenciales");
     }
 }
 const fnRedirigirAlUserDashboard = () => {
@@ -141,30 +141,37 @@ const fnBorrarUsuario = (id) => {
 
 
 const actualizarUsuario = (id) => {
-    
 
-    let user_temp = g_data.usuarios.find(user => user.id === id);
-    
-    document.getElementById("oculto").id = "form-visible-registro";
+    let user_temp = g_data.usuarios.find(user => user.idUser === id);
+    if (document.getElementById("oculto")) {
+        document.getElementById("oculto").id = "form-visible-registro";
+    }
 
-    document.getElementById("updateNombre").value = user_temp.nombre
-    document.getElementById("updateApellido").value = user_temp.apellido;
-    document.getElementById("updateUserName").value = user_temp.userName;
-    document.getElementById("updatePassword").value = user_temp.password
-    document.getElementById("updateRole").value = user_temp.role;
+    updateNombre.value = user_temp.nombre;
+    updateApellido.value = user_temp.apellido;
+    updateUserName.value = user_temp.userName;
+    updatePassword.value = user_temp.password
+    updateRole.value = user_temp.role;
     g_idSelecionado = id;
 }
 
 const fnActualizar = () => {
-    let predicate = user => user.id === g_idSelecionado;
-    g_data.usuarios.find(predicate).nombre = document.getElementById("updateNombre").value;
-    g_data.usuarios.find(predicate).apellido = document.getElementById("updateApellido").value;
-    g_data.usuarios.find(predicate).userName = document.getElementById("updateUserName").value;
-    g_data.usuarios.find(predicate).password = document.getElementById("updatePassword").value;
-    g_data.usuarios.find(predicate).role = document.getElementById("updateRole").value;
+    let predicate = user => user.idUser === g_idSelecionado;
+    g_data.usuarios.find(predicate).nombre = updateNombre.value;
+    g_data.usuarios.find(predicate).apellido = updateApellido.value;
+    g_data.usuarios.find(predicate).userName = updateUserName.value;
+    g_data.usuarios.find(predicate).password = updatePassword.value;
+    g_data.usuarios.find(predicate).role = updateRole.value;
 
     localStorage.setItem("data", JSON.stringify(g_data));
+    document.getElementById("form-visible-registro").id = "oculto";
     fnListarUsuarios();
+}
+
+const fnCancelarEdicion = () => {
+    if(document.getElementById("form-visible-registro")){
+        document.getElementById("form-visible-registro").id = "oculto";
+    }
 }
 
 const fnListarUsuarios = () => {
@@ -175,8 +182,9 @@ const fnListarUsuarios = () => {
         document.getElementById('tabla-usuarios').innerHTML = buff.join("\n");
         return false;
     }
-
-    buff.push(`<table class="table">`);
+    
+    buff.push(`<div class="table-responsive">`);
+    buff.push(`<table class="table align-middle table-bordered">`);
     buff.push(`<thead>`);
     buff.push(`<tr>`);
     buff.push(`<th scope="col">Nombres</th>`);
@@ -197,19 +205,35 @@ const fnListarUsuarios = () => {
         buff.push(`<td>${user.password}</td>`);
         buff.push(`<td>${user.role}</td>`);
         buff.push(`<td>`);
-        buff.push(`<nav>`);
+        buff.push(`<nav class = "botones">`);
         buff.push(`<button class = "btn btn-danger" onclick ="fnBorrarUsuario(${user.idUser})"> Borrar </button>`);
         buff.push(`<button class = "btn btn-primary" onclick = "actualizarUsuario(${user.idUser})"> Actualizar </button>`);
         buff.push(`</nav>`);
         buff.push(`</tbody>`);
     }
     buff.push(`</table>`);
+    buff.push(`</div>`)
     document.getElementById('tabla-usuarios').innerHTML = buff.join("\n");
     return true;
 }
 
 const init = () => {
     get_dato();
+
+
     fnListarUsuarios();
-    return false;
+
+    updateNombre = document.getElementById("updateNombre");
+    updateApellido = document.querySelector("#updateApellido");
+    updateUserName = document.getElementById("updateUserName");
+    updatePassword = document.getElementById("updatePassword");
+    updateRole = document.getElementById("updateRole");
+
+}
+
+const fnLogOutUsersDashBoard = () => {
+    admin.estaLogeado = false;
+    g_data.usuarioLogueado = null;
+    localStorage.setItem("data", JSON.stringify(g_data));
+    location.assign("../index.html");
 }
