@@ -1,10 +1,11 @@
 
 let admin = new User(0, "admin", "admin", "admin", "admin", false, "admin");
-
-let g_data = new Data([], [], [], [], null, admin);
+let g_data = new Data([], [], [], null, admin);
 let g_idSelecionado = -1;
-
+let g_idTicket = 0;
 let g_idUsuario = 1;
+
+
 let usuarioNombre;
 let usuarioApellido;
 let usuarioUserName;
@@ -20,8 +21,23 @@ let updateUserName;
 let updatePassword;
 let updateRole;
 
+//Manejo de Tickets
 
+let tituloTicket;
+let descripcionTicket;
+let responsable;
+let fechaEntrega;
+let estado;
+let prioridad;
 
+let actualizarTitulo;
+let actualizarDescripcion;
+let actualizarResponsable;
+let actualizarEntrega;
+let actualizarPrioridad;
+let actualizarEstado;
+
+//RegistroUser
 const fnGuardarUsuario = () => {
     if (verificarUserName(usuarioUserName.value)) {
 
@@ -63,6 +79,7 @@ const validarNombreApellido = (nombre, apellido) => {
     return band;
 }
 
+//Login
 const get_dato = () => {
     let data_temp = localStorage.getItem("data");
 
@@ -92,6 +109,7 @@ const logear_usuario = () => {
         g_data.usuarioLogueado = user_temp;
         alert("Logueado como usuario");
         localStorage.setItem("data", JSON.stringify(g_data));
+        fnRedirigirAlTicketDashboard();
 
 
     } else if (userName.value === admin.userName && pass.value === admin.password) {
@@ -109,12 +127,16 @@ const fnRedirigirAlUserDashboard = () => {
     location.assign("pages/UsersDashboard.html");
 }
 
+const fnRedirigirAlTicketDashboard = () => {
+    location.assign("pages/TicketDashBoard.html");
+}
 
+//UserController
 const obtener_usuario_logueado = () => {
     return g_data.usuarioLogueado;
 }
 
-const obtener_posicion = (id) => {
+const obtener_posicion_usuarios = (id) => {
     for (let i = 0; i < g_data.usuarios.length; i++) {
         if (g_data.usuarios[i].idUser === id) {
             return i;
@@ -125,7 +147,7 @@ const obtener_posicion = (id) => {
 
 
 const fnBorrarUsuario = (id) => {
-    let pos = obtener_posicion(id);
+    let pos = obtener_posicion_usuarios(id);
     if (pos === -1) {
         alert("Usuario no encontrado");
     } else {
@@ -169,7 +191,7 @@ const fnActualizar = () => {
 }
 
 const fnCancelarEdicion = () => {
-    if(document.getElementById("form-visible-registro")){
+    if (document.getElementById("form-visible-registro")) {
         document.getElementById("form-visible-registro").id = "oculto";
     }
 }
@@ -182,7 +204,7 @@ const fnListarUsuarios = () => {
         document.getElementById('tabla-usuarios').innerHTML = buff.join("\n");
         return false;
     }
-    
+
     buff.push(`<div class="table-responsive">`);
     buff.push(`<table class="table align-middle table-bordered">`);
     buff.push(`<thead>`);
@@ -236,4 +258,258 @@ const fnLogOutUsersDashBoard = () => {
     g_data.usuarioLogueado = null;
     localStorage.setItem("data", JSON.stringify(g_data));
     location.assign("../index.html");
+}
+
+const compareUser = (user1, user2) => {
+    return (user1.idUser === user2.idUser);
+}
+
+//TicketController
+const initTickets = () => {
+    get_dato();
+    tituloTicket = document.getElementById("titulo-ticket");
+    descripcionTicket = document.getElementById("descripcion-ticket");
+    responsableTicket = document.getElementById("responsable-ticket");
+    fechaEntrega = document.getElementById("fecha-fin-ticket");
+    prioridad = document.getElementById("prioridad");
+    estado = document.getElementById("estado");
+
+    actualizarTitulo = document.getElementById("actualizar-titulo");
+    actualizarDescripcion = document.getElementById("actualizar-descripcion");
+    actualizarEntrega = document.getElementById("actualizar-fecha-entrega");
+    actualizarResponsable = document.getElementById("actualizar-responsable");
+    actualizarEstado = document.getElementById("actualizar-estado");
+    actualizarPrioridad = document.getElementById("actualizar-prioridad");
+
+    fnListarTickets();
+}
+
+const fnGuardarTicket = () => {
+
+    let id_ticket = g_idTicket++;
+    let ticket_titulo = tituloTicket.value;
+    let ticket_descripcion = descripcionTicket.value;
+    let ticket_responsable;
+    if (responsableTicket.value === "ME" || "me" || "Me" || "mE") {
+        ticket_responsable = g_data.usuarioLogueado;
+    } else {
+        let responsable = g_data.usuarios.find(user => user.userName === resoinsableTicket.value);
+        if (responsable) {
+            ticket_responsable = responsable;
+        } else {
+            alert("usuario No encontrado");
+            return false;
+        }
+
+    }
+    let ticket_creador = g_data.usuarioLogueado;
+    let ticket_fecha_vencimiento = new Date(fechaEntrega.value);
+    let ticket_fecha_inicio = new Date();
+    let ticket_prioridad = prioridad.value;
+    let ticket_estado = estado.value;
+
+    g_data.tickets.push(
+        new Ticket(
+            id_ticket,
+            ticket_titulo,
+            ticket_descripcion,
+            ticket_responsable,
+            ticket_fecha_inicio,
+            ticket_fecha_vencimiento,
+            ticket_prioridad,
+            ticket_estado,
+            ticket_creador
+        )
+    );
+    localStorage.setItem("data", JSON.stringify(g_data));
+    fnListarTickets();
+
+}
+
+const fnListarPorEstado = (estado, id_estado_html) => {
+    let predicate = t => t.estado === estado;
+    if (!(g_data.tickets.filter(predicate).length === 0)) {
+        let buff = [];
+        buff.push(`
+        <div class="accordion accordion-flush" id="accordionFlushExample">
+                    <div class="accordion-item">
+                      <h2 class="accordion-header" id="flush-headingOne">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                          ${estado}
+                        </button>
+                      </h2>
+                    
+        `);
+        for (let ticket of g_data.tickets.filter(predicate)) {
+            if (
+                compareUser(ticket.responsable, g_data.usuarioLogueado)
+                || compareUser(ticket.creador, g_data.usuarioLogueado)
+            ) {
+                buff.push(
+                    `<div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                        <div class="accordion-body">
+                            <div class = "card">
+                                <div class = "card-body">
+                                    <h5 style =  class = "card-title">${ticket.titulo} </h5>
+                                    <p class = "card-text">${ticket.descripcion}</p>
+                                    <button type = "button" class = "btn btn-danger" onclick = "fnBorrarTicket(${ticket.id_ticket})">Borrar</button>
+                                    <button type = "button" class = "btn  btn-primary" data-bs-toggle="modal" data-bs-target="#modalCrearTicket">Ver Detalles</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="modalCrearTicket" tabindex="-1" aria-labelledby="modalCrearLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalCrearLabel">Editar Ticket</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form class="form-ticket">
+                                    <div class="row mb-3">
+            
+                                        <div class="col-sm-4">
+                                            <label for="actualizar-titulo" class="form-label"> Titulo </label>
+                                        </div>
+            
+                                        <div class="col-sm-8">
+                                            <input class="form-control" type="text" id="actualizar-titulo" value = "${ticket.titulo}">
+                                        </div>
+            
+                                    </div>
+            
+                                    <div class="row mb-3">
+            
+                                        <div class="col-sm-4">
+                                            <label class="form-label" for="actualizar-descripcion">Descipcion</label>
+                                        </div>
+            
+                                        <div class="col-sm-8">
+                                            <div class="form-floating">
+                                                <textarea class="form-control" id="actualizar-descripcion" value = "${ticket.descripcion}"></textarea>
+                                            </div>
+                                        </div>
+            
+                                    </div>
+            
+                                    <div class="row mb-3">
+            
+                                        <div class="col-sm-4">
+                                            <label class="form-label" for="actualizar-responsable">Asignar A:</label>
+                                        </div>
+            
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control"
+                                                id="actualizar-responsable" value = "${ticket.responsable.userName}">
+                                        </div>
+            
+            
+                                    </div>
+            
+                                    <div class="row mb-3">
+            
+                                        <div class="col-sm-6">
+                                            <label class="form-label" for="actualizar-fecha-entrega">Fecha de Entrega</label>
+                                        </div>
+            
+                                        <div class="col-sm-6">
+                                            <input type="date" id="actualizar-fecha-entrega" class="form-control"
+                                                value = "${new Date(ticket.fecha_vencimiento).getFullYear}-${new Date(ticket.fecha_vencimiento).getMonth}-${new Date(ticket.fecha_vencimiento).getDay}"
+                                            >
+                                        </div>
+            
+                                    </div>
+            
+                                    <div class="row mb-3">
+                                        <div class="col-sm-6">
+                                            <label class="form-label" for="actualizar-prioridad">Prioridad</label>
+                                        </div>
+            
+                                        <div class="col-sm-6">
+                                            <select id="actualizar-prioridad" name="prioridades" class = "form-control">
+                                                <option value="alta">Alta</option>
+                                                <option value="media">Media</option>
+                                                <option value="baja">Baja</option>
+            
+                                            </select>
+                                        </div>
+                                    </div>
+            
+            
+            
+            
+                                    <div class="row mb-3 mt-3">
+                                        <div class="col-sm-6">
+                                            <label class="form-label" for="actualizar-estado">Estado</label>
+                                        </div>
+            
+                                        <div class="col-sm-6">
+                                            <select id="actualizar-estado" name="estados" class = "form-control">
+                                                <option value="to-do">TO DO</option>
+                                                <option value="in-progress">IN PROGRESS</option>
+                                                <option value="finished">FINISHED</option>
+            
+                                            </select>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary" onclick="">Agregar Tarea</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                    `
+
+                );
+
+            }
+            else {
+                alert("No cumple por ahora");
+            }
+        };
+        buff.push('</div>')
+        document.getElementById(id_estado_html).innerHTML = buff.join('\n');
+    }
+}
+
+const fnListarTickets = () => {
+    if (!(g_data.tickets === 0)) {
+        fnListarPorEstado("to-do", "to-do");
+        fnListarPorEstado("in-progress", "in-progress");
+        fnListarPorEstado("finished","finished");
+    }
+}
+const obtener_posicion_tickets = (id) => {
+    for (let i = 0; i < g_data.tickets.length; i++) {
+        if (g_data.tickets[i].id_ticket === id) {
+            return i;
+        }
+    }
+    return -1;
+}
+const fnBorrarTicket = (id) => {
+    let pos = obtener_posicion_tickets(id);
+    if(pos === -1){
+        alert("Ticket no encontrado");
+    } else {
+        let band = window.confirm("Seguro que quiere borrar esta tarea?");
+        if (band) {
+            g_data.tickets.splice(pos, 1);
+            localStorage.setItem("data", JSON.stringify(g_data));
+            location.assign("TicketDashBoard.html");
+        }
+        
+    }
+}
+
+const fnActualizarTicket = (id) => {
+    
 }
