@@ -273,14 +273,6 @@ const initTickets = () => {
     fechaEntrega = document.getElementById("fecha-fin-ticket");
     prioridad = document.getElementById("prioridad");
     estado = document.getElementById("estado");
-
-    actualizarTitulo = document.getElementById("actualizar-titulo");
-    actualizarDescripcion = document.getElementById("actualizar-descripcion");
-    actualizarEntrega = document.getElementById("actualizar-fecha-entrega");
-    actualizarResponsable = document.getElementById("actualizar-responsable");
-    actualizarEstado = document.getElementById("actualizar-estado");
-    actualizarPrioridad = document.getElementById("actualizar-prioridad");
-
     fnListarTickets();
 }
 
@@ -353,7 +345,7 @@ const fnListarPorEstado = (estado, id_estado_html) => {
                                     <h5 style =  class = "card-title">${ticket.titulo} </h5>
                                     <p class = "card-text">${ticket.descripcion}</p>
                                     <button type = "button" class = "btn btn-danger" onclick = "fnBorrarTicket(${ticket.id_ticket})">Borrar</button>
-                                    <button type = "button" class = "btn  btn-primary" data-bs-toggle="modal" data-bs-target="#modalCrearTicket">Ver Detalles</button>
+                                    <button type = "button" class = "btn  btn-primary" data-bs-toggle="modal" data-bs-target="#modalEditarTicket">Editar</button>
                                 </div>
                             </div>
                         </div>
@@ -362,11 +354,11 @@ const fnListarPorEstado = (estado, id_estado_html) => {
             </div>
 
                     <!-- Modal -->
-                    <div class="modal fade" id="modalCrearTicket" tabindex="-1" aria-labelledby="modalCrearLabel" aria-hidden="true">
+                    <div class="modal fade" id="modalEditarTicket" tabindex="-1" aria-labelledby="modalEditarLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="modalCrearLabel">Editar Ticket</h5>
+                                <h5 class="modal-title" id="modalEditarLabel">Editar Ticket</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
@@ -391,7 +383,7 @@ const fnListarPorEstado = (estado, id_estado_html) => {
             
                                         <div class="col-sm-8">
                                             <div class="form-floating">
-                                                <textarea class="form-control" id="actualizar-descripcion" value = "${ticket.descripcion}"></textarea>
+                                                <textarea class="form-control" id="actualizar-descripcion">${ticket.descripcion}</textarea>
                                             </div>
                                         </div>
             
@@ -419,7 +411,7 @@ const fnListarPorEstado = (estado, id_estado_html) => {
             
                                         <div class="col-sm-6">
                                             <input type="date" id="actualizar-fecha-entrega" class="form-control"
-                                                value = "${new Date(ticket.fecha_vencimiento).getFullYear}-${new Date(ticket.fecha_vencimiento).getMonth}-${new Date(ticket.fecha_vencimiento).getDay}"
+                                                
                                             >
                                         </div>
             
@@ -431,7 +423,7 @@ const fnListarPorEstado = (estado, id_estado_html) => {
                                         </div>
             
                                         <div class="col-sm-6">
-                                            <select id="actualizar-prioridad" name="prioridades" class = "form-control">
+                                            <select  id="actualizar-prioridad" name="prioridades" class = "form-control">
                                                 <option value="alta">Alta</option>
                                                 <option value="media">Media</option>
                                                 <option value="baja">Baja</option>
@@ -449,7 +441,7 @@ const fnListarPorEstado = (estado, id_estado_html) => {
                                         </div>
             
                                         <div class="col-sm-6">
-                                            <select id="actualizar-estado" name="estados" class = "form-control">
+                                            <select  id="actualizar-estado" name="estados" class = "form-control">
                                                 <option value="to-do">TO DO</option>
                                                 <option value="in-progress">IN PROGRESS</option>
                                                 <option value="finished">FINISHED</option>
@@ -461,7 +453,7 @@ const fnListarPorEstado = (estado, id_estado_html) => {
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary" onclick="">Agregar Tarea</button>
+                                <button type="button" class="btn btn-primary" onclick="fnActualizarTicket(${ticket.id_ticket})">Editar Tarea</button>
                             </div>
                         </div>
                     </div>
@@ -472,7 +464,22 @@ const fnListarPorEstado = (estado, id_estado_html) => {
 
             }
             else {
-                alert("No cumple por ahora");
+                buff.push(
+                    `<div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                        <div class="accordion-body">
+                            <div class = "card">
+                                <div class = "card-body">
+                                    <h5 style =  class = "card-title">${ticket.titulo} </h5>
+                                    <p class = "card-text">${ticket.descripcion}</p>
+                                    <button type = "button" class = "btn btn-danger" onclick = "fnBorrarTicket(${ticket.id_ticket})">Borrar</button>
+                                    <button type = "button" class = "btn  btn-link" data-bs-toggle="modal" data-bs-target="#modalVerTicket">Ver Detalles</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`);
+                
             }
         };
         buff.push('</div>')
@@ -511,5 +518,34 @@ const fnBorrarTicket = (id) => {
 }
 
 const fnActualizarTicket = (id) => {
+
+    actualizarTitulo = document.getElementById("actualizar-titulo");
+    actualizarDescripcion = document.getElementById("actualizar-descripcion");
+    actualizarEntrega = document.getElementById("actualizar-fecha-entrega");
+    actualizarResponsable = document.getElementById("actualizar-responsable");
+    actualizarEstado = document.getElementById("actualizar-estado");
+    actualizarPrioridad = document.getElementById("actualizar-prioridad");
+
+    let predicate_ticket = t => t.id_ticket === id;
+    let predicate_user = u => u.userName === actualizarResponsable.value;
     
+    let user_temp = g_data.usuarios.find(predicate_user);
+    if(!(user_temp)){
+        alert("Usuario no encontrado");
+    }
+    else {
+        g_data.tickets.find(predicate_ticket).titulo = actualizarTitulo.value;
+        g_data.tickets.find(predicate_ticket).descripcion = actualizarDescripcion.value;
+        g_data.tickets.find(predicate_ticket).prioridad = actualizarPrioridad.value;
+        g_data.tickets.find(predicate_ticket).responsable = user_temp;
+        g_data.tickets.find(predicate_ticket).fecha_vencimiento = new Date(actualizarEntrega.value);
+        g_data.tickets.find(predicate_ticket).estado = actualizarEstado.value;
+      
+        localStorage.setItem("data", JSON.stringify(g_data));
+        location.assign("TicketDashBoard.html");
+    }
+    
+
+
+
 }
