@@ -183,7 +183,7 @@ const fnActualizar = () => {
     g_data.usuarios.find(predicate).password = updatePassword.value;
     g_data.usuarios.find(predicate).role = updateRole.value;
 
-    
+
 
 
 
@@ -320,8 +320,8 @@ const fnGuardarTicket = () => {
 
 }
 
-const fnListarPorEstado = (estado, id_estado_html, value) => {
-    let predicate = t => t.estado === estado;
+const fnListar = (id_estado_html, value) => {
+    let predicate = value;
     if (!(g_data.tickets.filter(predicate).length === 0)) {
         let buff = [];
         buff.push(`
@@ -329,15 +329,12 @@ const fnListarPorEstado = (estado, id_estado_html, value) => {
                     <div class="accordion-item">
                       <h2 class="accordion-header" id="flush-headingOne">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
-                          ${estado}
+                          ${id_estado_html}
                         </button>
                       </h2>
                     
         `);
-        for (let ticket of g_data.tickets.filter(predicate)) {
-            if(value){
-
-            
+        for (let ticket of g_data.tickets.filter(value)) {
             if (
                 compareUser(ticket.responsable, g_data.usuarioLogueado)
                 || compareUser(ticket.creador, g_data.usuarioLogueado)
@@ -628,23 +625,22 @@ const fnListarPorEstado = (estado, id_estado_html, value) => {
             
             `);
 
-            
 
 
-                
+
+
             }
         };
         buff.push('</div>')
         document.getElementById(id_estado_html).innerHTML = buff.join('\n');
     }
-    }
 }
 
 const fnListarTickets = () => {
     if (!(g_data.tickets === 0)) {
-        fnListarPorEstado("to-do", "to-do", true);
-        fnListarPorEstado("in-progress", "in-progress",true);
-        fnListarPorEstado("finished","finished", true);
+        fnListar("to-do", t => t.estado === "to-do");
+        fnListar("in-progress", t => t.estado === "in-progress");
+        fnListar("finished", t => t.estado === "finished");
     }
 }
 const obtener_posicion_tickets = (id) => {
@@ -657,7 +653,7 @@ const obtener_posicion_tickets = (id) => {
 }
 const fnBorrarTicket = (id) => {
     let pos = obtener_posicion_tickets(id);
-    if(pos === -1){
+    if (pos === -1) {
         alert("Ticket no encontrado");
     } else {
         let band = window.confirm("Seguro que quiere borrar esta tarea?");
@@ -666,7 +662,7 @@ const fnBorrarTicket = (id) => {
             localStorage.setItem("data", JSON.stringify(g_data));
             location.assign("TicketDashBoard.html");
         }
-        
+
     }
 }
 
@@ -681,9 +677,9 @@ const fnActualizarTicket = (id, value) => {
 
     let predicate_ticket = t => t.id_ticket === id;
     let predicate_user = u => u.userName === actualizarResponsable.value;
-    
+
     let user_temp = g_data.usuarios.find(predicate_user);
-    if(!(user_temp)){
+    if (!(user_temp)) {
         alert("Usuario no encontrado");
     }
     else {
@@ -693,13 +689,13 @@ const fnActualizarTicket = (id, value) => {
         g_data.tickets.find(predicate_ticket).responsable = user_temp;
         g_data.tickets.find(predicate_ticket).fecha_vencimiento = new Date(actualizarEntrega.value);
         g_data.tickets.find(predicate_ticket).estado = actualizarEstado.value;
-      
+
         localStorage.setItem("data", JSON.stringify(g_data));
         location.assign("TicketDashBoard.html");
     }
 }
 
-const fnLimpiarDashBoard = () =>{
+const fnLimpiarDashBoard = () => {
     document.getElementById("to-do").innerHTML = `<div id = "to-do" class = "col-sm-4"> </div>`;
     document.getElementById("in-progress").innerHTML = `<div id = "in-progress" class = "col-sm-4"> </div>`;
     document.getElementById("finished").innerHTML = `<div id = "finished" class = "col-sm-4"> </div>`;
@@ -708,14 +704,54 @@ const fnLimpiarDashBoard = () =>{
 
 const fnFiltrarPorUsuario = (userName) => {
     fnLimpiarDashBoard();
-    let buff = [];
-    for(let ticket of tickets){
-        if(userName === "Me" || "me" ||"mE"|| "ME"){
-            if(compareUser(ticket.responsable, g_data.usuarioLogueado) || compareUser(ticket.creador, g_data.usuarioLogueado)){
+    if (userName === "ME") {
+        fnListar("to-do", t => {
+            return t.estado === "to-do" && (
+                compareUser(g_data.usuarioLogueado, t.responsable) ||
+                compareUser(g_data.usuarioLogueado, t.creador)
+            )
+        });
 
+        fnListar("in-progress", t => {
+            return t.estado === "in-progress" && (
+                compareUser(g_data.usuarioLogueado, t.responsable) ||
+                compareUser(g_data.usuarioLogueado, t.creador)
+            )
+        });
 
-            }
-        }
+        fnListar("finished", t => {
+            return t.estado === "finished" && (
+                compareUser(g_data.usuarioLogueado, t.responsable) ||
+                compareUser(g_data.usuarioLogueado, t.creador)
+            )
+        });
+
+        return true;
+    }
+
+    else {
+        fnListar("to-do", t => {
+            return t.estado === "to-do" && (
+                t.creador.userName === userName ||
+                t.responsable.userName === userName
+            )
+        });
+
+        fnListar("in-progress", t => {
+            return t.estado === "in-progress" && (
+                t.creador.userName === userName ||
+                t.responsable.userName === userName
+            )
+        });
+
+        fnListar("finished", t => {
+            return t.estado === "finished" && (
+                t.creador.userName === userName ||
+                t.responsable.userName === userName
+            )
+        });
+
+        return false;
     }
 
 }
