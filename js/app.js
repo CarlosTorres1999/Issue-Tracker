@@ -184,16 +184,6 @@ const fnActualizar = () => {
     g_data.usuarios.find(predicate).password = updatePassword.value;
     g_data.usuarios.find(predicate).role = updateRole.value;
 
-    for(let ticket of g_data.tickets){
-        
-        if(ticket.creador.idUser === g_idSelecionado){
-            ticket.creador = g_data.usuarios.find(predicate);
-        }
-
-        if(ticket.responsable.idUser === g_idSelecionado){
-            ticket.responsable = g_data.usuarios.find(predicate);
-        }
-    }
     
 
 
@@ -267,7 +257,7 @@ const init = () => {
 }
 
 const fnLogOutUsersDashBoard = () => {
-    admin.estaLogeado = false;
+    g_data.administrador.estaLogeado = false;
     g_data.usuarioLogueado = null;
     localStorage.setItem("data", JSON.stringify(g_data));
     location.assign("../index.html");
@@ -331,7 +321,7 @@ const fnGuardarTicket = () => {
 
 }
 
-const fnListarPorEstado = (estado, id_estado_html) => {
+const fnListarPorEstado = (estado, id_estado_html, value) => {
     let predicate = t => t.estado === estado;
     if (!(g_data.tickets.filter(predicate).length === 0)) {
         let buff = [];
@@ -346,6 +336,9 @@ const fnListarPorEstado = (estado, id_estado_html) => {
                     
         `);
         for (let ticket of g_data.tickets.filter(predicate)) {
+            if(value){
+
+            
             if (
                 compareUser(ticket.responsable, g_data.usuarioLogueado)
                 || compareUser(ticket.creador, g_data.usuarioLogueado)
@@ -645,13 +638,14 @@ const fnListarPorEstado = (estado, id_estado_html) => {
         buff.push('</div>')
         document.getElementById(id_estado_html).innerHTML = buff.join('\n');
     }
+    }
 }
 
 const fnListarTickets = () => {
     if (!(g_data.tickets === 0)) {
-        fnListarPorEstado("to-do", "to-do");
-        fnListarPorEstado("in-progress", "in-progress");
-        fnListarPorEstado("finished","finished");
+        fnListarPorEstado("to-do", "to-do", true);
+        fnListarPorEstado("in-progress", "in-progress",true);
+        fnListarPorEstado("finished","finished", true);
     }
 }
 const obtener_posicion_tickets = (id) => {
@@ -704,8 +698,33 @@ const fnActualizarTicket = (id) => {
         localStorage.setItem("data", JSON.stringify(g_data));
         location.assign("TicketDashBoard.html");
     }
-    
+}
+
+const fnLimpiarDashBoard = () =>{
+    document.getElementById("to-do").innerHTML = `<div id = "to-do" class = "col-sm-4"> </div>`;
+    document.getElementById("in-progress").innerHTML = `<div id = "in-progress" class = "col-sm-4"> </div>`;
+    document.getElementById("finished").innerHTML = `<div id = "finished" class = "col-sm-4"> </div>`;
+}
 
 
+const fnFiltrarPorUsuario = (userName) => {
+    fnLimpiarDashBoard();
+    let buff = [];
+    for(let ticket of tickets){
+        if(userName === "Me" || "me" ||"mE"|| "ME"){
+            if(compareUser(ticket.responsable, g_data.usuarioLogueado) || compareUser(ticket.creador, g_data.usuarioLogueado)){
+
+
+            }
+        }
+    }
+
+}
+
+const logOut = () => {
+    g_data.usuarios.find(u => g_data.usuarioLogueado.idUser === u.idUser).estaLogeado = false;
+    g_data.usuarioLogueado = null;
+    localStorage.setItem("data", JSON.stringify(g_data));
+    location.assign("../index.html");
 
 }
