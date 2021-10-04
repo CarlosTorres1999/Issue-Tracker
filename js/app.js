@@ -344,9 +344,21 @@ const fnListarPorEstado = (estado, id_estado_html) => {
                                 <div class = "card-body">
                                     <h5 style =  class = "card-title">${ticket.titulo} </h5>
                                     <p class = "card-text">${ticket.descripcion}</p>
-                                    <button type = "button" class = "btn btn-danger" onclick = "fnBorrarTicket(${ticket.id_ticket})">Borrar</button>
-                                    <button type = "button" class = "btn  btn-primary" data-bs-toggle="modal" data-bs-target="#modalEditarTicket">Editar</button>
-                                </div>
+                                    <div class = "row">
+                                        <div class = "col-sm-4">
+                                            <button type = "button" class = "btn  btn-link" data-bs-toggle="modal" data-bs-target="#modalVerDetalle">Ver Mas</button>
+                                         </div>
+
+                                         <div class = "col-sm-4">
+                                            <button type = "button" class = "btn btn-danger" onclick = "fnBorrarTicket(${ticket.id_ticket})">Borrar</button>
+                                         </div>
+
+                                         <div class = "col-sm-4">
+                                            <button type = "button" class = "btn  btn-primary" data-bs-toggle="modal" data-bs-target="#modalEditarTicket">Editar</button>
+                                         </div>
+
+                                         
+                                    </div>
                             </div>
                         </div>
                     </div>
@@ -355,109 +367,174 @@ const fnListarPorEstado = (estado, id_estado_html) => {
 
                     <!-- Modal -->
                     <div class="modal fade" id="modalEditarTicket" tabindex="-1" aria-labelledby="modalEditarLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="modalEditarLabel">Editar Ticket</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <form class="form-ticket">
-                                    <div class="row mb-3">
-            
-                                        <div class="col-sm-4">
-                                            <label for="actualizar-titulo" class="form-label"> Titulo </label>
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modalEditarLabel">Editar Ticket</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form class="form-ticket">
+                                        <div class="row mb-3">
+                    
+                                            <div class="col-sm-4">
+                                                <label for="actualizar-titulo" class="form-label"> Titulo </label>
+                                            </div>
+                    
+                                            <div class="col-sm-8">
+                                                <input class="form-control" type="text" id="actualizar-titulo" value = "${ticket.titulo}">
+                                            </div>
+                    
                                         </div>
             
-                                        <div class="col-sm-8">
-                                            <input class="form-control" type="text" id="actualizar-titulo" value = "${ticket.titulo}">
+                                        <div class="row mb-3">
+            
+                                            <div class="col-sm-4">
+                                                <label class="form-label" for="actualizar-descripcion">Descipcion</label>
+                                            </div>
+                    
+                                            <div class="col-sm-8">
+                                                <div class="form-floating">
+                                                    <textarea class="form-control" id="actualizar-descripcion">${ticket.descripcion}</textarea>
+                                                </div>
+                                            </div>
+            
                                         </div>
             
-                                    </div>
+                                        <div class="row mb-3">
             
-                                    <div class="row mb-3">
+                                            <div class="col-sm-4">
+                                                <label class="form-label" for="actualizar-responsable">Asignar A:</label>
+                                            </div>
             
-                                        <div class="col-sm-4">
-                                            <label class="form-label" for="actualizar-descripcion">Descipcion</label>
+                                            <div class="col-sm-8">
+                                                <input type="text" class="form-control"
+                                                    id="actualizar-responsable" value = "${ticket.responsable.userName}">
+                                            </div>
+            
+            
                                         </div>
             
-                                        <div class="col-sm-8">
-                                            <div class="form-floating">
-                                                <textarea class="form-control" id="actualizar-descripcion">${ticket.descripcion}</textarea>
+                                        <div class="row mb-3">
+            
+                                            <div class="col-sm-6">
+                                                <label class="form-label" for="actualizar-fecha-entrega">Fecha de Entrega</label>
+                                            </div>
+            
+                                            <div class="col-sm-6">
+                                                <input type="date" id="actualizar-fecha-entrega" class="form-control"
+                                                
+                                            >
+                                            </div>
+            
+                                        </div>
+            
+                                        <div class="row mb-3">
+                                            <div class="col-sm-6">
+                                                <label class="form-label" for="actualizar-prioridad">Prioridad</label>
+                                            </div>
+            
+                                            <div class="col-sm-6">
+                                                <select  id="actualizar-prioridad" name="prioridades" class = "form-control">
+                                                    <option value="alta">Alta</option>
+                                                    <option value="media">Media</option>
+                                                    <option value="baja">Baja</option>
+            
+                                                </select>
                                             </div>
                                         </div>
             
-                                    </div>
             
-                                    <div class="row mb-3">
             
-                                        <div class="col-sm-4">
-                                            <label class="form-label" for="actualizar-responsable">Asignar A:</label>
+            
+                                        <div class="row mb-3 mt-3">
+                                            <div class="col-sm-6">
+                                                <label class="form-label" for="actualizar-estado">Estado</label>
+                                            </div>
+            
+                                            <div class="col-sm-6">
+                                                <select  id="actualizar-estado" name="estados" class = "form-control">
+                                                    <option value="to-do">TO DO</option>
+                                                    <option value="in-progress">IN PROGRESS</option>
+                                                    <option value="finished">FINISHED</option>
+            
+                                                </select>
+                                            </div>
                                         </div>
-            
-                                        <div class="col-sm-8">
-                                            <input type="text" class="form-control"
-                                                id="actualizar-responsable" value = "${ticket.responsable.userName}">
-                                        </div>
-            
-            
-                                    </div>
-            
-                                    <div class="row mb-3">
-            
-                                        <div class="col-sm-6">
-                                            <label class="form-label" for="actualizar-fecha-entrega">Fecha de Entrega</label>
-                                        </div>
-            
-                                        <div class="col-sm-6">
-                                            <input type="date" id="actualizar-fecha-entrega" class="form-control"
-                                                
-                                            >
-                                        </div>
-            
-                                    </div>
-            
-                                    <div class="row mb-3">
-                                        <div class="col-sm-6">
-                                            <label class="form-label" for="actualizar-prioridad">Prioridad</label>
-                                        </div>
-            
-                                        <div class="col-sm-6">
-                                            <select  id="actualizar-prioridad" name="prioridades" class = "form-control">
-                                                <option value="alta">Alta</option>
-                                                <option value="media">Media</option>
-                                                <option value="baja">Baja</option>
-            
-                                            </select>
-                                        </div>
-                                    </div>
-            
-            
-            
-            
-                                    <div class="row mb-3 mt-3">
-                                        <div class="col-sm-6">
-                                            <label class="form-label" for="actualizar-estado">Estado</label>
-                                        </div>
-            
-                                        <div class="col-sm-6">
-                                            <select  id="actualizar-estado" name="estados" class = "form-control">
-                                                <option value="to-do">TO DO</option>
-                                                <option value="in-progress">IN PROGRESS</option>
-                                                <option value="finished">FINISHED</option>
-            
-                                            </select>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary" onclick="fnActualizarTicket(${ticket.id_ticket})">Editar Tarea</button>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-primary" onclick="fnActualizarTicket(${ticket.id_ticket})">Editar Tarea</button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="modalVerDetalle" tabindex="-1" aria-labelledby="modalDetalleLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modalDetalleLabel">Detalle de la Tarea</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="card"">
+                                        <div class="card-body">
+                                            <h5 style = "margin-left:30%; margin-right: 30%;" class="card-title display-5">${ticket.titulo}</h5>
+                                            <h6 style = "margin-left:30%; margin-right: 30%;"  class="card-subtitle mb-2 text-muted">Descripcion</h6>
+                                            <p class="card-text">${ticket.descripcion}</p>
+
+                                            <h6 class = "card-title display-6">Creacion y asignacion</h6>
+                                            <div class = "row">
+                                                <div class = "col-sm-6"> 
+                                                    <h6 class = "card-subtitle ml-2">Creado por:</h6>
+                                                </div>
+
+                                                <div class = "col-sm-6">
+                                                    <p class ="card-text">${ticket.creador.userName}</p>
+                                                </div>
+                                            </div>
+
+                                            <div class = "row">
+                                                <div class = "col-sm-6"> 
+                                                    <h6 class = "card-subtitle ml-2">Asignado a:</h6>
+                                                </div>
+
+                                                <div class = "col-sm-6">
+                                                    <p class ="card-text">${ticket.responsable.userName}</p>
+                                                </div>
+                                            </div>
+
+                                            <h6 class = "card-title display-6">Fechas</h6>
+                                            <div class = "row"> 
+                                                <div class = "col-sm-6>
+                                                    <p class = "card-text">Fecha de creacion: </p>
+                                                </div>
+                                                <div class = "col-sm-6>
+                                                    <p class = "card-text">${ticket.fecha_creacion} </p>
+                                                </div>
+                                            </div>
+
+                                            <div class = "row"> 
+                                                <div class = "col-sm-6>
+                                                    <p class = "card-text">Fecha de vencimiento: </p>
+                                                </div>
+                                                <div class = "col-sm-6>
+                                                    <p class = "card-text">${ticket.fecha_vencimiento} </p>
+                                                </div>
+                                            </div>
+                                </div>
+                              </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     `
 
                 );
@@ -471,14 +548,84 @@ const fnListarPorEstado = (estado, id_estado_html) => {
                                 <div class = "card-body">
                                     <h5 style =  class = "card-title">${ticket.titulo} </h5>
                                     <p class = "card-text">${ticket.descripcion}</p>
-                                    <button type = "button" class = "btn btn-danger" onclick = "fnBorrarTicket(${ticket.id_ticket})">Borrar</button>
-                                    <button type = "button" class = "btn  btn-link" data-bs-toggle="modal" data-bs-target="#modalVerTicket">Ver Detalles</button>
+                                    <button type = "button" class = "btn  btn-link" data-bs-toggle="modal" data-bs-target="#modalVerDetalle">Ver Mas</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>`);
+            </div>
+                
+            <!-- Modal -->
+            <div class="modal fade" id="modalVerDetalle" tabindex="-1" aria-labelledby="modalDetalleLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalDetalleLabel">Detalle de la Tarea</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="card"">
+                                <div class="card-body">
+                                    <h5 style = "margin-left:30%; margin-right: 30%;" class="card-title display-5">${ticket.titulo}</h5>
+                                    <h6 style = "margin-left:30%; margin-right: 30%;"  class="card-subtitle mb-2 text-muted">Descripcion</h6>
+                                    <p class="card-text">${ticket.descripcion}</p>
+
+                                    <h6 class = "card-title display-6">Creacion y asignacion</h6>
+                                    <div class = "row">
+                                        <div class = "col-sm-6"> 
+                                            <h6 class = "card-subtitle ml-2">Creado por:</h6>
+                                        </div>
+
+                                        <div class = "col-sm-6">
+                                            <p class ="card-text">${ticket.creador.userName}</p>
+                                        </div>
+                                    </div>
+
+                                    <div class = "row">
+                                        <div class = "col-sm-6"> 
+                                            <h6 class = "card-subtitle ml-2">Asignado a:</h6>
+                                        </div>
+
+                                        <div class = "col-sm-6">
+                                            <p class ="card-text">${ticket.responsable.userName}</p>
+                                        </div>
+                                    </div>
+
+                                    <h6 class = "card-title display-6">Fechas</h6>
+                                    <div class = "row"> 
+                                        <div class = "col-sm-6>
+                                            <p class = "card-text">Fecha de creacion: </p>
+                                        </div>
+                                        <div class = "col-sm-6>
+                                            <p class = "card-text">${ticket.fecha_creacion} </p>
+                                        </div>
+                                    </div>
+
+                                    <div class = "row"> 
+                                        <div class = "col-sm-6>
+                                            <p class = "card-text">Fecha de vencimiento: </p>
+                                        </div>
+                                        <div class = "col-sm-6>
+                                            <p class = "card-text">${ticket.fecha_vencimiento} </p>
+                                        </div>
+                                    </div>
+                        </div>
+                      </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            `);
+
+            
+
+
                 
             }
         };
