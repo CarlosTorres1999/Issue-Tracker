@@ -1,8 +1,7 @@
 let admin = new User(0, "admin", "admin", "admin", "admin", false, "admin");
-let g_data = new Data([], [], [], null, admin);
+let g_data = new Data([], [], [], null, admin, 1, 1);
 let g_idSelecionado = -1;
-let g_idTicket = 0;
-let g_idUsuario = 1;
+
 
 
 let usuarioNombre;
@@ -41,7 +40,7 @@ const fnGuardarUsuario = () => {
     if (verificarUserName(usuarioUserName.value)) {
 
         let usuario = new User(
-            g_idUsuario++,
+            g_data.id_usuario_global++,
             usuarioNombre.value,
             usuarioApellido.value,
             usuarioUserName.value,
@@ -104,7 +103,7 @@ const logear_usuario = () => {
     let user_temp = g_data.usuarios.find(user => user.userName === userName.value && user.password === pass.value);
 
     if (user_temp) {
-        user_temp.estaLogueado = true;
+        user_temp.estaLogeado = true;
         g_data.usuarioLogueado = user_temp;
         alert("Logueado como usuario");
         localStorage.setItem("data", JSON.stringify(g_data));
@@ -281,14 +280,14 @@ const initTickets = () => {
 
 const fnGuardarTicket = () => {
 
-    let id_ticket = g_idTicket++;
+    let id_ticket = g_data.id_ticket_global++;
     let ticket_titulo = tituloTicket.value;
     let ticket_descripcion = descripcionTicket.value;
     let ticket_responsable;
-    if (responsableTicket.value === "ME" || "me" || "Me" || "mE") {
+    if (responsableTicket.value === "ME") {
         ticket_responsable = g_data.usuarioLogueado;
     } else {
-        let responsable = g_data.usuarios.find(user => user.userName === resoinsableTicket.value);
+        let responsable = g_data.usuarios.find(user => user.userName === responsableTicket.value);
         if (responsable) {
             ticket_responsable = responsable;
         } else {
@@ -352,7 +351,7 @@ const fnListarPorEstado = (estado, id_estado_html, value) => {
                                     <p class = "card-text">${ticket.descripcion}</p>
                                     <div class = "row">
                                         <div class = "col-sm-4">
-                                            <button type = "button" class = "btn  btn-link" data-bs-toggle="modal" data-bs-target="#modalVerDetalle">Ver Mas</button>
+                                            <button type = "button" class = "btn  btn-link" data-bs-toggle="modal" data-bs-target="#modalVerDetalle${ticket.id_ticket}">Ver Mas</button>
                                          </div>
 
                                          <div class = "col-sm-4">
@@ -360,7 +359,7 @@ const fnListarPorEstado = (estado, id_estado_html, value) => {
                                          </div>
 
                                          <div class = "col-sm-4">
-                                            <button type = "button" class = "btn  btn-primary" data-bs-toggle="modal" data-bs-target="#modalEditarTicket">Editar</button>
+                                            <button type = "button" class = "btn  btn-primary" data-bs-toggle="modal" data-bs-target="#modalEditarTicket${ticket.id_ticket}">Editar</button>
                                          </div>
 
                                          
@@ -372,11 +371,11 @@ const fnListarPorEstado = (estado, id_estado_html, value) => {
             </div>
 
                     <!-- Modal -->
-                    <div class="modal fade" id="modalEditarTicket" tabindex="-1" aria-labelledby="modalEditarLabel" aria-hidden="true">
+                    <div class="modal fade" id="modalEditarTicket${ticket.id_ticket}" tabindex="-1" aria-labelledby="modalEditarLabel${ticket.id_ticket}" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="modalEditarLabel">Editar Ticket</h5>
+                                    <h5 class="modal-title" id="modalEditarLabel${ticket.id_ticket}">Editar Ticket</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
@@ -384,11 +383,11 @@ const fnListarPorEstado = (estado, id_estado_html, value) => {
                                         <div class="row mb-3">
                     
                                             <div class="col-sm-4">
-                                                <label for="actualizar-titulo" class="form-label"> Titulo </label>
+                                                <label for="actualizar-titulo${ticket.id_ticket}" class="form-label"> Titulo </label>
                                             </div>
                     
                                             <div class="col-sm-8">
-                                                <input class="form-control" type="text" id="actualizar-titulo" value = "${ticket.titulo}">
+                                                <input class="form-control" type="text" id="actualizar-titulo${ticket.id_ticket}" value = "${ticket.titulo}">
                                             </div>
                     
                                         </div>
@@ -396,12 +395,12 @@ const fnListarPorEstado = (estado, id_estado_html, value) => {
                                         <div class="row mb-3">
             
                                             <div class="col-sm-4">
-                                                <label class="form-label" for="actualizar-descripcion">Descipcion</label>
+                                                <label class="form-label" for="actualizar-descripcion${ticket.id_ticket}">Descipcion</label>
                                             </div>
                     
                                             <div class="col-sm-8">
                                                 <div class="form-floating">
-                                                    <textarea class="form-control" id="actualizar-descripcion">${ticket.descripcion}</textarea>
+                                                    <textarea class="form-control" id="actualizar-descripcion${ticket.id_ticket}">${ticket.descripcion}</textarea>
                                                 </div>
                                             </div>
             
@@ -410,12 +409,12 @@ const fnListarPorEstado = (estado, id_estado_html, value) => {
                                         <div class="row mb-3">
             
                                             <div class="col-sm-4">
-                                                <label class="form-label" for="actualizar-responsable">Asignar A:</label>
+                                                <label class="form-label" for="actualizar-responsable${ticket.id_ticket}">Asignar A:</label>
                                             </div>
             
                                             <div class="col-sm-8">
                                                 <input type="text" class="form-control"
-                                                    id="actualizar-responsable" value = "${ticket.responsable.userName}">
+                                                    id="actualizar-responsable${ticket.id_ticket}" value = "${ticket.responsable.userName}">
                                             </div>
             
             
@@ -424,11 +423,11 @@ const fnListarPorEstado = (estado, id_estado_html, value) => {
                                         <div class="row mb-3">
             
                                             <div class="col-sm-6">
-                                                <label class="form-label" for="actualizar-fecha-entrega">Fecha de Entrega</label>
+                                                <label class="form-label" for="actualizar-fecha-entrega${ticket.id_ticket}">Fecha de Entrega</label>
                                             </div>
             
                                             <div class="col-sm-6">
-                                                <input type="date" id="actualizar-fecha-entrega" class="form-control"
+                                                <input type="date" id="actualizar-fecha-entrega${ticket.id_ticket}" class="form-control"
                                                 
                                             >
                                             </div>
@@ -437,11 +436,11 @@ const fnListarPorEstado = (estado, id_estado_html, value) => {
             
                                         <div class="row mb-3">
                                             <div class="col-sm-6">
-                                                <label class="form-label" for="actualizar-prioridad">Prioridad</label>
+                                                <label class="form-label" for="actualizar-prioridad${ticket.id_ticket}">Prioridad</label>
                                             </div>
             
                                             <div class="col-sm-6">
-                                                <select  id="actualizar-prioridad" name="prioridades" class = "form-control">
+                                                <select  id="actualizar-prioridad${ticket.id_ticket}" name="prioridades" class = "form-control">
                                                     <option value="alta">Alta</option>
                                                     <option value="media">Media</option>
                                                     <option value="baja">Baja</option>
@@ -455,11 +454,11 @@ const fnListarPorEstado = (estado, id_estado_html, value) => {
             
                                         <div class="row mb-3 mt-3">
                                             <div class="col-sm-6">
-                                                <label class="form-label" for="actualizar-estado">Estado</label>
+                                                <label class="form-label" for="actualizar-estado${ticket.id_ticket}">Estado</label>
                                             </div>
             
                                             <div class="col-sm-6">
-                                                <select  id="actualizar-estado" name="estados" class = "form-control">
+                                                <select  id="actualizar-estado${ticket.id_ticket}" name="estados" class = "form-control">
                                                     <option value="to-do">TO DO</option>
                                                     <option value="in-progress">IN PROGRESS</option>
                                                     <option value="finished">FINISHED</option>
@@ -471,18 +470,18 @@ const fnListarPorEstado = (estado, id_estado_html, value) => {
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary" onclick="fnActualizarTicket(${ticket.id_ticket})">Editar Tarea</button>
+                                    <button type="button" class="btn btn-primary" onclick="fnActualizarTicket(${ticket.id_ticket}, ${ticket.id_ticket})">Editar Tarea</button>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Modal -->
-                    <div class="modal fade" id="modalVerDetalle" tabindex="-1" aria-labelledby="modalDetalleLabel" aria-hidden="true">
+                    <div class="modal fade" id="modalVerDetalle${ticket.id_ticket}" tabindex="-1" aria-labelledby="modalDetalleLabel${ticket.id_ticket}" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="modalDetalleLabel">Detalle de la Tarea</h5>
+                                    <h5 class="modal-title" id="modalDetalleLabel${ticket.id_ticket}">Detalle de la Tarea</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
@@ -554,7 +553,7 @@ const fnListarPorEstado = (estado, id_estado_html, value) => {
                                 <div class = "card-body">
                                     <h5 style =  class = "card-title">${ticket.titulo} </h5>
                                     <p class = "card-text">${ticket.descripcion}</p>
-                                    <button type = "button" class = "btn  btn-link" data-bs-toggle="modal" data-bs-target="#modalVerDetalle">Ver Mas</button>
+                                    <button type = "button" class = "btn  btn-link" data-bs-toggle="modal" data-bs-target="#modalVerDetalle${ticket.id_ticket}">Ver Mas</button>
                                 </div>
                             </div>
                         </div>
@@ -563,11 +562,11 @@ const fnListarPorEstado = (estado, id_estado_html, value) => {
             </div>
                 
             <!-- Modal -->
-            <div class="modal fade" id="modalVerDetalle" tabindex="-1" aria-labelledby="modalDetalleLabel" aria-hidden="true">
+            <div class="modal fade" id="modalVerDetalle${ticket.id_ticket}" tabindex="-1" aria-labelledby="modalDetalleLabel${ticket.id_ticket}" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="modalDetalleLabel">Detalle de la Tarea</h5>
+                            <h5 class="modal-title" id="modalDetalleLabel${ticket.id_ticket}">Detalle de la Tarea</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
@@ -671,14 +670,14 @@ const fnBorrarTicket = (id) => {
     }
 }
 
-const fnActualizarTicket = (id) => {
+const fnActualizarTicket = (id, value) => {
 
-    actualizarTitulo = document.getElementById("actualizar-titulo");
-    actualizarDescripcion = document.getElementById("actualizar-descripcion");
-    actualizarEntrega = document.getElementById("actualizar-fecha-entrega");
-    actualizarResponsable = document.getElementById("actualizar-responsable");
-    actualizarEstado = document.getElementById("actualizar-estado");
-    actualizarPrioridad = document.getElementById("actualizar-prioridad");
+    actualizarTitulo = document.getElementById(`actualizar-titulo${value}`);
+    actualizarDescripcion = document.getElementById(`actualizar-descripcion${value}`);
+    actualizarEntrega = document.getElementById(`actualizar-fecha-entrega${value}`);
+    actualizarResponsable = document.getElementById(`actualizar-responsable${value}`);
+    actualizarEstado = document.getElementById(`actualizar-estado${value}`);
+    actualizarPrioridad = document.getElementById(`actualizar-prioridad${value}`);
 
     let predicate_ticket = t => t.id_ticket === id;
     let predicate_user = u => u.userName === actualizarResponsable.value;
@@ -722,7 +721,7 @@ const fnFiltrarPorUsuario = (userName) => {
 }
 
 const logOut = () => {
-    g_data.usuarios.find(u => g_data.usuarioLogueado.idUser === u.idUser).estaLogeado = false;
+    g_data.usuarios.find(u => compareUser(u, g_data.usuarioLogueado)).estaLogeado = false;
     g_data.usuarioLogueado = null;
     localStorage.setItem("data", JSON.stringify(g_data));
     location.assign("../index.html");
