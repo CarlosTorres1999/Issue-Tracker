@@ -1,4 +1,3 @@
-
 let admin = new User(0, "admin", "admin", "admin", "admin", false, "admin");
 let g_data = new Data([], [], [], null, admin);
 let g_idSelecionado = -1;
@@ -184,6 +183,20 @@ const fnActualizar = () => {
     g_data.usuarios.find(predicate).userName = updateUserName.value;
     g_data.usuarios.find(predicate).password = updatePassword.value;
     g_data.usuarios.find(predicate).role = updateRole.value;
+
+    for(let ticket of g_data.tickets){
+        
+        if(ticket.creador.idUser === g_idSelecionado){
+            ticket.creador = g_data.usuarios.find(predicate);
+        }
+
+        if(ticket.responsable.idUser === g_idSelecionado){
+            ticket.responsable = g_data.usuarios.find(predicate);
+        }
+    }
+    
+
+
 
     localStorage.setItem("data", JSON.stringify(g_data));
     document.getElementById("form-visible-registro").id = "oculto";
