@@ -16,6 +16,7 @@
     <script src="../js/model/Ticket.js"></script>
     <script src="../js/model/Comentario.js"></script>
     <script src="../js/model/Data.js"></script>
+   
     <script src="../js/app.js"></script>
 
 
@@ -50,6 +51,14 @@
                 <button class="nav-link" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact"
                     type="button" role="tab" aria-controls="pills-contact" aria-selected="false">Prioridades</button>
             </li>
+
+            <li class = "nav-tem" role = "presentation">
+                <a class = "nav-link" href = "javascript:fnLimpiarDashBoard()">Clear</a>
+            </li>
+
+            <li class = "nav-tem" role = "presentation">
+                <a class = "nav-link" href = "javascript:fnListarTickets()">Reset</a>
+            </li>
         </ul>
         <div class="tab-content" id="pills-tabContent">
             <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
@@ -65,7 +74,7 @@
                         </div>
 
                         <div class ="col-sm-2">
-                            <button type = "button" class ="btn btn-primary">Filtrar</button>
+                            <button onclick="fnFiltrarUser()" type = "button" class ="btn btn-primary">Filtrar</button>
                         </div>
                     </div>
                 </form>
@@ -86,7 +95,7 @@
                         </div>
 
                         <div class = "col-sm-4">
-                            <button type = "button" class = "btn btn-primary">Filtrar</button>
+                            <button onclick="fnFiltrarFechas()" type = "button" class = "btn btn-primary">Filtrar</button>
                         </div>
                     </div>
                 </form>
@@ -107,7 +116,7 @@
                         </div>
 
                         <div class = "col-sm-3">
-                            <button type = "button" class = "btn btn-primary">Filtrar</button>
+                            <button onclick="fnFiltrarPrioridad()" type = "button" class = "btn btn-primary">Filtrar</button>
                         </div>
                     </div>
                 </form>

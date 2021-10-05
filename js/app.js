@@ -1,9 +1,9 @@
+//Variables globales
 let admin = new User(0, "admin", "admin", "admin", "admin", false, "admin");
-let g_data = new Data([], [], [], null, admin, 1, 1);
+let g_data = new Data([], [], [], null, admin, 1, 1, 1);
 let g_idSelecionado = -1;
 
-
-
+//Variables Usadas para leer los inputs
 let usuarioNombre;
 let usuarioApellido;
 let usuarioUserName;
@@ -35,7 +35,18 @@ let actualizarEntrega;
 let actualizarPrioridad;
 let actualizarEstado;
 
+let filtrarUserName;
+let filtrarPrioridad;
+let filtrarFechaInicio;
+let filtrarFechaFin;
+
+
+
 //RegistroUser
+
+/**
+ * Funcion para guardar nuevo Usuario
+ */
 const fnGuardarUsuario = () => {
     if (verificarUserName(usuarioUserName.value)) {
 
@@ -58,26 +69,23 @@ const fnGuardarUsuario = () => {
     }
 }
 
+/**
+ * Verfica el nombre de Usuario, si es valido los parametros
+ * @param {*} userName  El nombre de Usuario
+ * @returns True si valida, false si no
+ */
 const verificarUserName = (userName) => {
     let usuario_temp = g_data.usuarios.find(user => user.userName === userName);
     return usuario_temp === undefined ? true : false;
 }
 
-const validarNombreApellido = (nombre, apellido) => {
-    let band = true;
-    if (nombre === "") {
-        band = false;
 
-    }
-
-    if (apellido === "") {
-        band = false;
-    }
-
-    return band;
-}
 
 //Login
+
+/**
+ * Funcion que recupera los datos del localStorage
+ */
 const get_dato = () => {
     let data_temp = localStorage.getItem("data");
 
@@ -86,6 +94,9 @@ const get_dato = () => {
     }
 }
 
+/**
+ * Funcion que inicia en la carga de la pag del login, para tener los inputs del formulario de registro e inicio de sesion
+ */
 const initLogin = () => {
     usuarioNombre = document.getElementById("usuario-nombre");
     usuarioApellido = document.getElementById("usuario-apellido");
@@ -98,6 +109,10 @@ const initLogin = () => {
     userName = document.getElementById("inputUser");
     get_dato();
 }
+
+/**
+ * Funcion que se encarga de loguear al usuario, validar sus credenciales
+ */
 
 const logear_usuario = () => {
     let user_temp = g_data.usuarios.find(user => user.userName === userName.value && user.password === pass.value);
@@ -121,6 +136,8 @@ const logear_usuario = () => {
         alert("Error en las credenciales");
     }
 }
+
+
 const fnRedirigirAlUserDashboard = () => {
     location.assign("pages/UsersDashboard.html");
 }
@@ -130,10 +147,20 @@ const fnRedirigirAlTicketDashboard = () => {
 }
 
 //UserController
+
+/**
+ * Recupera al usuario Logueado
+ * @returns el usuario actualmente logueado
+ */
 const obtener_usuario_logueado = () => {
     return g_data.usuarioLogueado;
 }
 
+/**
+ * Obtiene la posicion del arreglo de usuarios 
+ * @param {*} id id del usuario
+ * @returns la posicion del usuario, si no se encuentra, retorna -1
+ */
 const obtener_posicion_usuarios = (id) => {
     for (let i = 0; i < g_data.usuarios.length; i++) {
         if (g_data.usuarios[i].idUser === id) {
@@ -143,7 +170,10 @@ const obtener_posicion_usuarios = (id) => {
     return -1;
 }
 
-
+/**
+ * Funcion para borrar el Usuario
+ * @param {*} id el id del usuario que se desea borrar
+ */
 const fnBorrarUsuario = (id) => {
     let pos = obtener_posicion_usuarios(id);
     if (pos === -1) {
@@ -152,6 +182,8 @@ const fnBorrarUsuario = (id) => {
         let band = window.confirm("Seguro que quiere borrar al usuario?");
         if (band) {
             g_data.usuarios.splice(pos, 1);
+            
+
             localStorage.setItem("data", JSON.stringify(g_data));
             fnListarUsuarios();
         }
@@ -275,6 +307,11 @@ const initTickets = () => {
     fechaEntrega = document.getElementById("fecha-fin-ticket");
     prioridad = document.getElementById("prioridad");
     estado = document.getElementById("estado");
+
+    filtrarUserName = document.getElementById("buscar-userName");
+    filtrarPrioridad = document.getElementById("filtrar-prioridad");
+    filtrarFechaFin = document.getElementById("filtrar-fecha-inicio");
+    filtrarFechaInicio = document.getElementById("filtrar-fecha-fin");
     fnListarTickets();
 }
 
@@ -529,10 +566,9 @@ const fnListar = (id_estado_html, value) => {
                                             </div>
                                 </div>
                               </div>
-                                </div>
+                             </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        
+                                    
                                 </div>
                             </div>
                         </div>
@@ -616,8 +652,6 @@ const fnListar = (id_estado_html, value) => {
                       </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-
                         </div>
                     </div>
                 </div>
@@ -756,6 +790,62 @@ const fnFiltrarPorUsuario = (userName) => {
 
 }
 
+const fnFiltrarPorPrioridad = (prioridad) => {
+    fnLimpiarDashBoard();
+
+    fnListar("to-do", (t) => {
+        return t.estado === "to-do" && t.prioridad === prioridad;
+    });
+
+    fnListar("in-progress", (t) => {
+        return t.estado === "in-progress" && t.prioridad === prioridad;
+    });
+
+    fnListar("finished", (t) => {
+        return t.estado === "finished" && t.prioridad === prioridad;
+    });
+
+}
+
+const fnFiltrarPorFechas = (init, fn) => {
+
+    let inicioValue = init.split("-");
+    let finValue = fn.split("-");
+
+    let inicio = new Date();
+    inicio.setYear(inicioValue[0]);
+    inicio.setDate(inicioValue[2]);
+    inicio.setDate(inicioValue[1]);
+
+    let fin = new Date();
+    fin.setYear(finValue[0]);
+    fin.setDate(finValue[2]);
+    fin.setDate(finValue[1]);
+
+    console.log(inicio);
+    console.log(fin);
+
+    fnListar("finished", (t) => {
+        return t.estado === "finished" && (
+            new Date(t.fecha_creacion) < inicio && new Date(t.fecha_creacion) > fin
+        )
+    });
+}
+
+const fnFiltrarUser = () => {
+    fnFiltrarPorUsuario(filtrarUserName.value);
+}
+
+const fnFiltrarFechas = () => {
+    fnFiltrarPorFechas(filtrarFechaInicio.value, filtrarFechaFin.value);
+}
+
+const fnFiltrarPrioridad = () => {
+    fnFiltrarPorPrioridad(filtrarPrioridad.value);
+}
+
+
+
 const logOut = () => {
     g_data.usuarios.find(u => compareUser(u, g_data.usuarioLogueado)).estaLogeado = false;
     g_data.usuarioLogueado = null;
@@ -763,3 +853,7 @@ const logOut = () => {
     location.assign("../index.html");
 
 }
+
+
+
+
