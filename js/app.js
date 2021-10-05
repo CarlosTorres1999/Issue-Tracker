@@ -636,6 +636,16 @@ const fnListar = (id_estado_html, value) => {
                                                     <p class = "card-text">${ticket.fecha_vencimiento} </p>
                                                 </div>
                                             </div>
+
+                                            <div class = "row">
+                                                <div class = "col-sm-6">
+                                                    Prioridad: 
+                                                </div>
+
+                                                <div class = "col-sm-6">
+                                                    ${ticket.prioridad}
+                                                </div>
+                                            </div>
                                 </div>
                               </div>
                              </div>
@@ -720,6 +730,16 @@ const fnListar = (id_estado_html, value) => {
                                             <p class = "card-text">${ticket.fecha_vencimiento} </p>
                                         </div>
                                     </div>
+
+                                    <div class = "row">
+                                    <div class = "col-sm-6">
+                                        Prioridad: 
+                                    </div>
+
+                                    <div class = "col-sm-6">
+                                        ${ticket.prioridad}
+                                    </div>
+                                </div>
                         </div>
                       </div>
                         </div>
