@@ -70,7 +70,7 @@ const fnGuardarUsuario = () => {
 
 /**
  * Verfica el nombre de Usuario, si es valido los parametros
- * @param {*} userName  El nombre de Usuario
+ * @param {String} userName  El nombre de Usuario
  * @returns True si valida, false si no
  */
 const verificarUserName = (userName) => {
@@ -155,7 +155,7 @@ const obtener_usuario_logueado = () => {
 
 /**
  * Obtiene la posicion del arreglo de usuarios 
- * @param {*} id id del usuario
+ * @param {Number} id id del usuario
  * @returns la posicion del usuario, si no se encuentra, retorna -1
  */
 const obtener_posicion_usuarios = (id) => {
@@ -169,7 +169,7 @@ const obtener_posicion_usuarios = (id) => {
 
 /**
  * Funcion para borrar el Usuario, tambien borra todos los tickets asignados, y creados por ese usuario
- * @param {*} id el id del usuario que se desea borrar
+ * @param {Number} id el id del usuario que se desea borrar
  */
 const fnBorrarUsuario = (id) => {
     let pos = obtener_posicion_usuarios(id);
@@ -201,7 +201,7 @@ const fnBorrarUsuario = (id) => {
 
 /**
  * Funcion para actualizar el usuario, lo que hace es completar el formulario de actualizacion
- * @param {*} id id del usuario 
+ * @param {Number} id id del usuario 
  */
 const actualizarUsuario = (id) => {
 
@@ -255,12 +255,20 @@ const fnActualizar = () => {
     fnListarUsuarios();
 }
 
+/**
+ * Funcion que oculta el formulario de edicion en la pag de UserDashboard.html
+ */
 const fnCancelarEdicion = () => {
     if (document.getElementById("form-visible-registro")) {
         document.getElementById("form-visible-registro").id = "oculto";
     }
 }
 
+
+/**
+ * Funcion que permite listar todos los usuarios en una tabla
+ * @returns Si hay usuarios, retorna true, si no, retorna false
+ */
 const fnListarUsuarios = () => {
 
     let buff = [];
@@ -304,6 +312,9 @@ const fnListarUsuarios = () => {
     return true;
 }
 
+/**
+ * Funcion para cargar todos los inputs
+ */
 const init = () => {
     get_dato();
 
@@ -318,17 +329,31 @@ const init = () => {
 
 }
 
+
+/**
+ * Para desloguear al Usuario, redirige a la pag de login
+ */
 const fnLogOutUsersDashBoard = () => {
     g_data.usuarioLogueado = null;
     localStorage.setItem("data", JSON.stringify(g_data));
     location.assign("../index.html");
 }
 
+
+/**
+ * Compara si dos usuarios son iguales
+ * @param {User} user1 El usuario para comparar
+ * @param {User} user2 El usuario para comparar
+ * @returns si son iguales, true, si no, false
+ */
 const compareUser = (user1, user2) => {
     return (user1.idUser === user2.idUser);
 }
 
 //TicketController
+/**
+ * Fucnion que carga los inputs
+ */
 const initTickets = () => {
     get_dato();
     tituloTicket = document.getElementById("titulo-ticket");
@@ -345,6 +370,11 @@ const initTickets = () => {
     fnListarTickets();
 }
 
+
+/**
+ * Funcion que se encarga de guardar un sticker en el localstorage 
+ * @returns true si se guarda correctamente, false su no
+ */
 const fnGuardarTicket = () => {
 
     let id_ticket = g_data.id_ticket_global++;
@@ -384,8 +414,14 @@ const fnGuardarTicket = () => {
     );
     localStorage.setItem("data", JSON.stringify(g_data));
     fnListarTickets();
-
+    return true;
 }
+
+/**
+ * Lista los tickets
+ * @param {Number} id_estado_html En que estado quieres mostrar
+ * @param {Function} value Un predicado que sirve de filtro 
+ */
 
 const fnListar = (id_estado_html, value) => {
     let predicate = value;
@@ -700,6 +736,9 @@ const fnListar = (id_estado_html, value) => {
     }
 }
 
+/**
+ * Lista todos los tickets
+ */
 const fnListarTickets = () => {
     if (!(g_data.tickets === 0)) {
         fnListar("to-do", t => t.estado === "to-do");
@@ -707,6 +746,12 @@ const fnListarTickets = () => {
         fnListar("finished", t => t.estado === "finished");
     }
 }
+
+/**
+ * Obtiene la posicion del ticket
+ * @param {Number} id El id del ticket 
+ * @returns la posicion
+ */
 const obtener_posicion_tickets = (id) => {
     for (let i = 0; i < g_data.tickets.length; i++) {
         if (g_data.tickets[i].id_ticket === id) {
@@ -715,6 +760,11 @@ const obtener_posicion_tickets = (id) => {
     }
     return -1;
 }
+
+/**
+ * Borra el ticket 
+ * @param {Number} id  el id del ticket que desea ser borrado
+ */
 const fnBorrarTicket = (id) => {
     let pos = obtener_posicion_tickets(id);
     if (pos === -1) {
@@ -730,6 +780,11 @@ const fnBorrarTicket = (id) => {
     }
 }
 
+/**
+ * Actualiza los parametros de los tickets
+ * @param {Number} id el id del ticket
+ * @param {Number} value el id del ticket, para obtener del componente html
+ */
 const fnActualizarTicket = (id, value) => {
 
     actualizarTitulo = document.getElementById(`actualizar-titulo${value}`);
@@ -759,13 +814,20 @@ const fnActualizarTicket = (id, value) => {
     }
 }
 
+/**
+ * Limpia el dashboard
+ */
 const fnLimpiarDashBoard = () => {
     document.getElementById("to-do").innerHTML = `<div id = "to-do" class = "col-sm-4"> </div>`;
     document.getElementById("in-progress").innerHTML = `<div id = "in-progress" class = "col-sm-4"> </div>`;
     document.getElementById("finished").innerHTML = `<div id = "finished" class = "col-sm-4"> </div>`;
 }
 
-
+/**
+ * Filtra por userName
+ * @param {String} userName  el usarName
+ * @returns si encuentra valores, true, si no, false
+ */
 const fnFiltrarPorUsuario = (userName) => {
     fnLimpiarDashBoard();
     if (userName === "ME") {
@@ -820,6 +882,10 @@ const fnFiltrarPorUsuario = (userName) => {
 
 }
 
+/**
+ * Filtra por prioridad
+ * @param {String} prioridad la prioridad 
+ */
 const fnFiltrarPorPrioridad = (prioridad) => {
     fnLimpiarDashBoard();
 
@@ -836,7 +902,11 @@ const fnFiltrarPorPrioridad = (prioridad) => {
     });
 
 }
-
+/**
+ * OJO, esta funcion no esta en uso
+ * @param {String} init fecha de inicio
+ * @param {String} fn fehca fin
+ */
 const fnFiltrarPorFechas = (init, fn) => {
 
     let inicioValue = init.split("-");
@@ -875,7 +945,9 @@ const fnFiltrarPrioridad = () => {
 }
 
 
-
+/**
+ * Desloguea Al usuario
+ */
 const logOut = () => {
     g_data.usuarioLogueado = null;
     localStorage.setItem("data", JSON.stringify(g_data));
