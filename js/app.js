@@ -317,7 +317,9 @@ const fnListarUsuarios = () => {
  */
 const init = () => {
     get_dato();
-
+     if(!(g_data.usuarioLogueado)){
+         location.assign("../index.html");
+     }
 
     fnListarUsuarios();
 
@@ -356,6 +358,10 @@ const compareUser = (user1, user2) => {
  */
 const initTickets = () => {
     get_dato();
+
+    if(!(g_data.usuarioLogueado)){
+        location.assign("../index.html");
+    }
     tituloTicket = document.getElementById("titulo-ticket");
     descripcionTicket = document.getElementById("descripcion-ticket");
     responsableTicket = document.getElementById("responsable-ticket");
