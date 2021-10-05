@@ -4,7 +4,6 @@ function User(
     apellido,
     userName,
     password,
-    estaLogeado,
     role
 ) {
     this.idUser = idUser,
@@ -12,7 +11,6 @@ function User(
     this.apellido = apellido;
     this.userName = userName;
     this.password = password;
-    this.estaLogeado = estaLogeado;
     this.role = role;
 }
 

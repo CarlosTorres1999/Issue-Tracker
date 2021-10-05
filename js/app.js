@@ -56,7 +56,6 @@ const fnGuardarUsuario = () => {
             usuarioApellido.value,
             usuarioUserName.value,
             usuarioPassword.value,
-            false,
             "user"
         );
 
@@ -118,7 +117,6 @@ const logear_usuario = () => {
     let user_temp = g_data.usuarios.find(user => user.userName === userName.value && user.password === pass.value);
 
     if (user_temp) {
-        user_temp.estaLogeado = true;
         g_data.usuarioLogueado = user_temp;
         alert("Logueado como usuario");
         localStorage.setItem("data", JSON.stringify(g_data));
@@ -126,7 +124,6 @@ const logear_usuario = () => {
 
 
     } else if (userName.value === admin.userName && pass.value === admin.password) {
-        admin.estaLogeado = true;
         g_data.usuarioLogueado = admin;
         g_data.administrador = admin;
         alert("logueado como administrador");
@@ -317,7 +314,6 @@ const init = () => {
 }
 
 const fnLogOutUsersDashBoard = () => {
-    g_data.administrador.estaLogeado = false;
     g_data.usuarioLogueado = null;
     localStorage.setItem("data", JSON.stringify(g_data));
     location.assign("../index.html");
@@ -876,7 +872,6 @@ const fnFiltrarPrioridad = () => {
 
 
 const logOut = () => {
-    g_data.usuarios.find(u => compareUser(u, g_data.usuarioLogueado)).estaLogeado = false;
     g_data.usuarioLogueado = null;
     localStorage.setItem("data", JSON.stringify(g_data));
     location.assign("../index.html");
