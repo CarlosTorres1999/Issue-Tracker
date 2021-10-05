@@ -171,7 +171,7 @@ const obtener_posicion_usuarios = (id) => {
 }
 
 /**
- * Funcion para borrar el Usuario
+ * Funcion para borrar el Usuario, tambien borra todos los tickets asignados, y creados por ese usuario
  * @param {*} id el id del usuario que se desea borrar
  */
 const fnBorrarUsuario = (id) => {
@@ -183,6 +183,12 @@ const fnBorrarUsuario = (id) => {
         if (band) {
             g_data.usuarios.splice(pos, 1);
             
+            for(let ticket of g_data.tickets){
+                if(ticket.responsable.idUser === id || ticket.creador.idUser === id){
+                    let pos_ticket = obtener_posicion_tickets(ticket.id);
+                    g_data.tickets.splice(pos_ticket, 1);
+                }
+            }
 
             localStorage.setItem("data", JSON.stringify(g_data));
             fnListarUsuarios();
@@ -191,7 +197,10 @@ const fnBorrarUsuario = (id) => {
     }
 }
 
-
+/**
+ * Funcion para actualizar el usuario, lo que hace es completar el formulario de actualizacion
+ * @param {*} id id del usuario 
+ */
 const actualizarUsuario = (id) => {
 
     let user_temp = g_data.usuarios.find(user => user.idUser === id);
@@ -207,6 +216,9 @@ const actualizarUsuario = (id) => {
     g_idSelecionado = id;
 }
 
+/**
+ * Funcion que actualiza al usuario, tambien actualiza las ocurrencias de los usuarios en los tickets
+ */
 const fnActualizar = () => {
     let predicate = user => user.idUser === g_idSelecionado;
     g_data.usuarios.find(predicate).nombre = updateNombre.value;
@@ -215,6 +227,23 @@ const fnActualizar = () => {
     g_data.usuarios.find(predicate).password = updatePassword.value;
     g_data.usuarios.find(predicate).role = updateRole.value;
 
+    for(let ticket of g_data.tickets){
+        if(ticket.creador.idUser === g_idSelecionado){
+            ticket.creador.nombre = updateNombre.value;
+            ticket.creador.apellido = updateApellido.value
+            ticket.creador.userName = updateUserName.value;
+            ticket.creador.password = updatePassword.value;
+            ticket.creador.role = updateRole.value;
+        }
+
+        if(ticket.responsable.idUser === g_idSelecionado) {
+            ticket.responsable.nombre = updateNombre.value;
+            ticket.responsable.apellido = updateApellido.value
+            ticket.responsable.userName = updateUserName.value;
+            ticket.responsable.password = updatePassword.value;
+            ticket.responsable.role = updateRole.value;
+        }
+    }
 
 
 
@@ -694,7 +723,7 @@ const fnBorrarTicket = (id) => {
         if (band) {
             g_data.tickets.splice(pos, 1);
             localStorage.setItem("data", JSON.stringify(g_data));
-            location.assign("TicketDashBoard.html");
+            fnListarTickets();
         }
 
     }
