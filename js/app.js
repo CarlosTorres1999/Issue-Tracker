@@ -173,6 +173,7 @@ const obtener_posicion_usuarios = (id) => {
  */
 const fnBorrarUsuario = (id) => {
     let pos = obtener_posicion_usuarios(id);
+    let posiciones  = [];
     if (pos === -1) {
         alert("Usuario no encontrado");
     } else {
@@ -183,8 +184,12 @@ const fnBorrarUsuario = (id) => {
             for(let ticket of g_data.tickets){
                 if(ticket.responsable.idUser === id || ticket.creador.idUser === id){
                     let pos_ticket = obtener_posicion_tickets(ticket.id);
-                    g_data.tickets.splice(pos_ticket, 1);
+                    posiciones.push(pos_ticket);
                 }
+            }
+
+            for(let posicion_ticket of posiciones){
+                g_data.tickets.splice(posicion_ticket, 1);
             }
 
             localStorage.setItem("data", JSON.stringify(g_data));
