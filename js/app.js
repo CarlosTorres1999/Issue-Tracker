@@ -972,3 +972,15 @@ const fnVerComentarios = (ticket) => {
         }
     }
 }
+
+const fnComentar = (ticket, user) => {
+
+} 
+
+const fnEliminarComentario = (idComentario) => {
+
+}
+
+const fnEditarComentario = (idComentario) => {
+
+}
