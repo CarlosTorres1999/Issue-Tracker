@@ -43,10 +43,7 @@
                 <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home"
                     type="button" role="tab" aria-controls="pills-home" aria-selected="true">User Name</button>
             </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile"
-                    type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Tiempo</button>
-            </li>
+
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact"
                     type="button" role="tab" aria-controls="pills-contact" aria-selected="false">Prioridades</button>
@@ -75,27 +72,6 @@
 
                         <div class ="col-sm-2">
                             <button onclick="fnFiltrarUser()" type = "button" class ="btn btn-primary">Filtrar</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
-                <form class = "form">
-                    <div class = "row">
-                        <div class = "col-sm-12">
-                            <label>Rango de fechas</label>
-                        </div>
-                    </div>
-                    <div class = "row">
-                        <div class = "col-sm-4">
-                            <input type = "date" class = "form-control" id = "filtrar-fecha-inicio">
-                        </div>
-                        <div class = "col-sm-4">
-                            <input type = "date" class = "form-control" id = "filtrar-fecha-fin">
-                        </div>
-
-                        <div class = "col-sm-4">
-                            <button onclick="fnFiltrarFechas()" type = "button" class = "btn btn-primary">Filtrar</button>
                         </div>
                     </div>
                 </form>

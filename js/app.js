@@ -371,8 +371,8 @@ const initTickets = () => {
 
     filtrarUserName = document.getElementById("buscar-userName");
     filtrarPrioridad = document.getElementById("filtrar-prioridad");
-    filtrarFechaFin = document.getElementById("filtrar-fecha-inicio");
-    filtrarFechaInicio = document.getElementById("filtrar-fecha-fin");
+    filtrarFechaFin = document.getElementById("filtrar-fecha-fin");
+    filtrarFechaInicio = document.getElementById("filtrar-fecha-inicio");
     fnListarTickets();
 }
 
@@ -931,40 +931,14 @@ const fnFiltrarPorPrioridad = (prioridad) => {
 /**
  * OJO, esta funcion no esta en uso
  * @param {String} init fecha de inicio
- * @param {String} fn fehca fin
+ * @param {String} fin fehca fin
  */
-const fnFiltrarPorFechas = (init, fn) => {
 
-    let inicioValue = init.split("-");
-    let finValue = fn.split("-");
-
-    let inicio = new Date();
-    inicio.setYear(inicioValue[0]);
-    inicio.setDate(inicioValue[2]);
-    inicio.setDate(inicioValue[1]);
-
-    let fin = new Date();
-    fin.setYear(finValue[0]);
-    fin.setDate(finValue[2]);
-    fin.setDate(finValue[1]);
-
-    console.log(inicio);
-    console.log(fin);
-
-    fnListar("finished", (t) => {
-        return t.estado === "finished" && (
-            new Date(t.fecha_creacion) < inicio && new Date(t.fecha_creacion) > fin
-        )
-    });
-}
 
 const fnFiltrarUser = () => {
     fnFiltrarPorUsuario(filtrarUserName.value);
 }
 
-const fnFiltrarFechas = () => {
-    fnFiltrarPorFechas(filtrarFechaInicio.value, filtrarFechaFin.value);
-}
 
 const fnFiltrarPrioridad = () => {
     fnFiltrarPorPrioridad(filtrarPrioridad.value);
