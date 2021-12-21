@@ -958,3 +958,17 @@ const logOut = () => {
 
 
 
+const fnVerComentarios = (ticket) => {
+    let buff = [];
+    if( g_data.comentarios.length === 0) return;
+    for(let comentario of g_data.comentarios){
+        if(comentario.ticket.id_ticket === ticket.id_ticket){
+            if(ticket.creador.idUser === g_data.usuarioLogueado.idUser){
+
+            }
+            else {
+
+            }
+        }
+    }
+}
