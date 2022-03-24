@@ -5,7 +5,7 @@ Autor: Carlos Cristobal Torres Carballo
 # Detalles
 
 Consiste en una pag web que te administra las tareas,
-tambien permite adminstrar usuarios.
+tambien permite administrar usuarios.
 
 
 
